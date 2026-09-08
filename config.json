@@ -26,5 +26,6 @@
     { "name": "开学第一天", "date": "2027-01-11" }
   ],
   "background": { "mode": "daily", "intervalMinutes": 30, "dim": 0.35, "files": [] },
+  "overscanScale": 0.8,
   "refreshSeconds": 30
 }

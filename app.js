@@ -246,10 +246,21 @@ function startBackground(cfg) {
 }
 
 loadConfig().then(cfg => {
+  /* DPI 自愈：Lively 偶发把壁纸窗口建成 125% 尺寸(2400x1350)而屏幕只有 1920x1080，
+     导致右侧/底部面板被切出屏幕。检测到视口超宽就整体缩回。 */
+  function fixDpi() {
+    /* Lively 在开机自启时偶发把壁纸按 125% 尺寸渲染(2400x1350 锚定左上)，
+       右/下被切出 1920x1080 物理屏。overscanScale = 1/系统缩放，硬纠回。 */
+    let ratio = window.screen ? window.screen.width / window.innerWidth : 1;
+    if (ratio >= 0.99 && cfg.overscanScale) ratio = cfg.overscanScale;
+    document.documentElement.style.zoom = ratio < 0.99 ? ratio : "";
+  }
+  fixDpi();
+  window.addEventListener("resize", fixDpi);
   applyLayout(cfg.layout || DEFAULT_CONFIG.layout);
   startBackground(cfg);
   tick(cfg);
   setInterval(() => tick(cfg), (cfg.refreshSeconds || 30) * 1000);
   loadCalendar(cfg).then(() => tick(cfg));
-  setInterval(() => loadCalendar(cfg), 10 * 60 * 1000); // 每 10 分钟重读日历文件
+  setInterval(() => loadCalendar(cfg), 10 * 60 * 1000);
 });
