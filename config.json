@@ -1,10 +1,10 @@
 {
   "layout": {
-    "weekbar": "tl",
+    "weekbar": "tc",
     "clocks": "tr",
-    "courses": "ml",
-    "deadlines": "bl",
-    "events": "br"
+    "courses": "mr",
+    "deadlines": "br",
+    "events": "bc"
   },
   "clocks": [
     { "city": "Boston", "tz": "America/New_York" },
