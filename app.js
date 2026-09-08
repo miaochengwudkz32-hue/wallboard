@@ -249,11 +249,10 @@ loadConfig().then(cfg => {
   /* DPI 自愈：Lively 偶发把壁纸窗口建成 125% 尺寸(2400x1350)而屏幕只有 1920x1080，
      导致右侧/底部面板被切出屏幕。检测到视口超宽就整体缩回。 */
   function fixDpi() {
-    /* Lively 在开机自启时偶发把壁纸按 125% 尺寸渲染(2400x1350 锚定左上)，
-       右/下被切出 1920x1080 物理屏。overscanScale = 1/系统缩放，硬纠回。 */
-    let ratio = window.screen ? window.screen.width / window.innerWidth : 1;
-    if (ratio >= 0.99 && cfg.overscanScale) ratio = cfg.overscanScale;
-    document.documentElement.style.zoom = ratio < 0.99 ? ratio : "";
+    /* Lively 开机自启时偶发把壁纸按 125% 渲染(视口 2400x1350,锚定左上),
+       物理 1920x1080 只能看到左上 80%。把整个面板层缩放回可视区。 */
+    const s = cfg.overscanScale || 1;
+    document.getElementById("board").style.transform = "scale(" + s + ")";
   }
   fixDpi();
   window.addEventListener("resize", fixDpi);

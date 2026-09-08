@@ -22,7 +22,11 @@ html, body {
   z-index: 1;
   pointer-events: none;
 }
-#board { position: relative; z-index: 2; }
+#board {
+  position: absolute; inset: 0;
+  z-index: 2;
+  transform-origin: 0 0;
+}
 
 .panel {
   position: absolute;
