@@ -7,19 +7,11 @@
 </head>
 <body>
 <div id="board">
-  <div id="datebox">
-    <div id="date"></div>
-    <div id="weekday"></div>
-  </div>
-  <div id="clocks"></div>
-  <div id="courses">
-    <div class="title">今天 · Today</div>
-    <div id="courselist">—</div>
-  </div>
-  <div id="deadlines">
-    <div class="title">Next Deadline</div>
-    <div id="ddllist">—</div>
-  </div>
+  <div id="clocks"   class="panel pos-tr"></div>
+  <div id="weekbar"  class="panel pos-tl"></div>
+  <div id="courses"  class="panel pos-ml"><div class="title">今天 · Today</div><div id="courselist">—</div></div>
+  <div id="deadlines" class="panel pos-bl"><div class="title">Next Deadline</div><div id="ddllist">—</div></div>
+  <div id="events"   class="panel pos-br"><div class="title">Countdown</div><div id="eventlist">—</div></div>
 </div>
 <script src="app.js"></script>
 </body>

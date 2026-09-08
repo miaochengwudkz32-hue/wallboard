@@ -6,48 +6,42 @@ html, body {
   overflow: hidden;
 }
 
-#board {
-  box-sizing: border-box;
-  width: 100%; height: 100%;
-  padding: 4vmin;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr 1fr;
-  gap: 3vmin;
+.panel {
+  position: absolute;
+  background: rgba(0,0,0,.45);
+  border-radius: 1.2vmin;
+  padding: 2.2vmin 2.8vmin;
+  backdrop-filter: blur(2px);
   text-shadow: 0 1px 6px rgba(0,0,0,.8);
 }
 
-.panel {
-  background: rgba(0,0,0,.45);
-  border-radius: 1.2vmin;
-  padding: 2.4vmin 3vmin;
-  backdrop-filter: blur(2px);
-}
+/* 九宫格定位 — config.json 的 layout 字段映射到这些类 */
+.pos-tl { top: 4vmin;    left: 4vmin;  }
+.pos-tc { top: 4vmin;    left: 50%;    transform: translateX(-50%); }
+.pos-tr { top: 4vmin;    right: 4vmin; }
+.pos-ml { top: 50%;      left: 4vmin;  transform: translateY(-50%); }
+.pos-c  { top: 50%;      left: 50%;    transform: translate(-50%, -50%); }
+.pos-mr { top: 50%;      right: 4vmin; transform: translateY(-50%); }
+.pos-bl { bottom: 7vmin; left: 4vmin;  }
+.pos-bc { bottom: 7vmin; left: 50%;    transform: translateX(-50%); }
+.pos-br { bottom: 7vmin; right: 4vmin; }
+.pos-none { display: none; }
 
-#datebox {
-  grid-column: 1 / 2;
-  display: flex; align-items: baseline; gap: 2vmin;
-}
-#date { font-size: 5.5vmin; font-weight: 700; }
-#weekday { font-size: 4vmin; opacity: .85; }
-
-#clocks {
-  grid-column: 2 / 3;
-  display: flex; justify-content: flex-end; gap: 3vmin;
-}
+#clocks { display: flex; gap: 3vmin; }
 .clock { text-align: right; }
-.clock .city { font-size: 2.2vmin; opacity: .8; letter-spacing: .1em; }
-.clock .time { font-size: 5.5vmin; font-weight: 700; font-variant-numeric: tabular-nums; }
+.clock .city  { font-size: 2.2vmin; opacity: .8; letter-spacing: .1em; }
+.clock .time  { font-size: 5.5vmin; font-weight: 700; font-variant-numeric: tabular-nums; }
+.clock .date  { font-size: 2.2vmin; opacity: .75; }  /* 仅当该时区日期与本地不同才显示 */
 
-#courses  { grid-column: 1 / 2; }
-#deadlines{ grid-column: 2 / 3; }
+#weekbar { font-size: 3vmin; font-weight: 700; }
+#weekbar small { font-size: 2vmin; opacity: .7; margin-left: 1.2vmin; font-weight: 400; }
 
 .title {
   font-size: 2.4vmin; opacity: .75;
   letter-spacing: .2em; margin-bottom: 1.6vmin;
 }
 
-.item { font-size: 3.2vmin; line-height: 1.7; }
+.item { font-size: 3.2vmin; line-height: 1.7; white-space: nowrap; }
 .item small { font-size: 2.4vmin; opacity: .8; margin-right: 1.5vmin; }
 
 .item.urgent { color: #ff7b72; font-weight: 700; }
