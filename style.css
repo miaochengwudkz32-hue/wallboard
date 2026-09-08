@@ -6,6 +6,24 @@ html, body {
   overflow: hidden;
 }
 
+/* 背景层：双层交叉淡入 + 默认渐变兜底 */
+.bglayer {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #1a2a4f 0%, #0d1b2e 55%, #091420 100%);
+  background-size: cover;
+  background-position: center;
+  opacity: 0; transition: opacity 1.5s ease;
+  z-index: 0;
+}
+.bglayer.show { opacity: 1; }
+#dim {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 1;
+  pointer-events: none;
+}
+#board { position: relative; z-index: 2; }
+
 .panel {
   position: absolute;
   background: rgba(0,0,0,.45);

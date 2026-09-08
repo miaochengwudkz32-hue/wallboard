@@ -22,6 +22,7 @@ const DEFAULT_CONFIG = {
     { name: "赴美出发", date: "2026-12-28" },
     { name: "开学第一天", date: "2027-01-11" }
   ],
+  background: { "mode": "daily", "intervalMinutes": 30, "dim": 0.35 },
   refreshSeconds: 30
 };
 
@@ -179,8 +180,74 @@ function tick(cfg) {
   renderEvents(cfg, now);
 }
 
+/* ---------- 自定义背景：bg/1.jpg…bg/30.jpg 自动探测，或 config 手列 backgrounds ---------- */
+
+function probeImages(list) {
+  return Promise.all(list.map(src => new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(src);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  })));
+}
+
+async function loadBackgrounds(cfg) {
+  const exts = ["jpg", "jpeg", "png", "webp"];
+  const auto = [];
+  for (let i = 1; i <= 30; i++) auto.push(...exts.map(e => `bg/${i}.${e}`));
+  const explicit = (cfg.background && cfg.background.files) || [];
+  const found = (await probeImages(explicit)).filter(Boolean);
+  if (found.length) { cfg._bgList = found; return; }
+  // 自动探测要按编号顺序去重（同一编号取第一个命中的扩展名）
+  const hits = (await probeImages(auto)).filter(Boolean);
+  const seen = new Set();
+  cfg._bgList = hits.filter(src => {
+    const n = src.match(/bg\/(\d+)\./)[1];
+    if (seen.has(n)) return false;
+    seen.add(n); return true;
+  });
+}
+
+function showBackground(cfg, index) {
+  if (!cfg._bgList || !cfg._bgList.length) {
+    document.getElementById("dim").style.background =
+      `rgba(0,0,0,${(cfg.background && cfg.background.dim) ?? 0.35})`;
+    return;
+  }
+  const src = cfg._bgList[index % cfg._bgList.length];
+  const layers = [document.getElementById("bgA"), document.getElementById("bgB")];
+  const next = layers.find(l => l !== cfg._bgCur) || layers[0];
+  next.style.backgroundImage = `url("${src}")`;
+  next.classList.add("show");
+  if (cfg._bgCur) cfg._bgCur.classList.remove("show");
+  cfg._bgCur = next;
+  document.getElementById("dim").style.background =
+    `rgba(0,0,0,${(cfg.background && cfg.background.dim) ?? 0.35})`;
+}
+
+function startBackground(cfg) {
+  const bg = cfg.background || {};
+  const mode = bg.mode || "daily";
+  document.getElementById("dim").style.background = `rgba(0,0,0,${bg.dim ?? 0.35})`;
+  if (mode === "off") return;
+  loadBackgrounds(cfg).then(() => {
+    if (!cfg._bgList || !cfg._bgList.length) return;
+    if (mode === "static") showBackground(cfg, 0);
+    else if (mode === "daily") {
+      const day = Math.floor(Date.now() / 864e5);
+      showBackground(cfg, day);
+      // 跨天自动换
+      setInterval(() => showBackground(cfg, Math.floor(Date.now() / 864e5)), 60000);
+    } else if (mode === "interval") {
+      let i = 0; showBackground(cfg, 0);
+      setInterval(() => showBackground(cfg, ++i), (bg.intervalMinutes || 30) * 60000);
+    }
+  });
+}
+
 loadConfig().then(cfg => {
   applyLayout(cfg.layout || DEFAULT_CONFIG.layout);
+  startBackground(cfg);
   tick(cfg);
   setInterval(() => tick(cfg), (cfg.refreshSeconds || 30) * 1000);
   loadCalendar(cfg).then(() => tick(cfg));

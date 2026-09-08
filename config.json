@@ -25,5 +25,6 @@
     { "name": "赴美出发", "date": "2026-12-28" },
     { "name": "开学第一天", "date": "2027-01-11" }
   ],
+  "background": { "mode": "daily", "intervalMinutes": 30, "dim": 0.35, "files": [] },
   "refreshSeconds": 30
 }
